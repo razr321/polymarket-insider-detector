@@ -97,8 +97,12 @@ class PolymarketClient:
 
     def get_closed_positions(self, address: str, limit: int = 50,
                              offset: int = 0) -> list:
+        # IMPORTANT: must use sortBy=timestamp to get wins AND losses.
+        # Default sort is by realizedPnl descending, which returns only
+        # winners first — paginating never reaches the losses for large wallets.
         return self._get(f"{DATA_API}/closed-positions",
-                         {"user": address, "limit": limit, "offset": offset})
+                         {"user": address, "limit": limit, "offset": offset,
+                          "sortBy": "timestamp"})
 
     def get_all_closed_positions(self, address: str, max_pages: int = 100) -> list:
         all_pos = []
