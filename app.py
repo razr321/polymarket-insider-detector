@@ -222,7 +222,9 @@ if run_button:
         color = RISK_COLORS.get(val, '#666')
         return f'background-color: {color}; color: white; font-weight: bold'
 
-    styled = display_df.style.applymap(color_risk, subset=['Risk'])
+    # pandas >= 2.1 renamed applymap to map
+    style_fn = getattr(display_df.style, 'map', None) or display_df.style.applymap
+    styled = style_fn(color_risk, subset=['Risk'])
     st.dataframe(styled, use_container_width=True, hide_index=True)
 
     # ── Score Breakdown (for single wallet or clicked row) ───
